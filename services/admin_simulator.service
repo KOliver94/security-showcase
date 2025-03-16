@@ -1,0 +1,13 @@
+[Unit]
+Description=Admin Simulator
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/var/www/news-feed/helpers
+Environment="APPLICATION_URL=http://localhost:5001"
+ExecStart=/var/www/news-feed/helpers/.venv/bin/python /var/www/news-feed/helpers/admin_simulator.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

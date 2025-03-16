@@ -1,0 +1,6 @@
+.idea
+.venv
+.vscode
+helpers
+.gitignore
+news-feed.db

@@ -1,0 +1,12 @@
+[Unit]
+Description=Vulnera: News Feed
+After=network.target
+
+[Service]
+User=bob
+WorkingDirectory=/var/www/news-feed
+ExecStart=/var/www/news-feed/.venv/bin/flask run --host=0.0.0.0 --port=5001
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

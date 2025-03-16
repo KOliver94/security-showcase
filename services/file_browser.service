@@ -1,0 +1,12 @@
+[Unit]
+Description=Vulnera: File Browser
+After=network.target
+
+[Service]
+User=bob
+WorkingDirectory=/var/www/file-browser
+ExecStart=/var/www/file-browser/.venv/bin/flask run --host=0.0.0.0 --port=7002
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

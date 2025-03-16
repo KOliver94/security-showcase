@@ -1,0 +1,54 @@
+ls -lah
+pwd
+cd /var/www/news-feed
+ls
+vim app.py
+git status
+cd ..
+mkdir logs
+touch logs/error.log
+tail -f logs/error.log
+cd news-feed
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+deactivate
+rm -rf .venv
+python3 -m venv .venv
+source .venv/bin/activate
+pip install flask
+which python
+python --version
+pip list
+pip freeze > requirements.txt
+deactivate
+ls -lah ~
+cat ~/.bashrc
+cd /var/log
+ls -lah | grep nginx
+cd ~
+history | grep sudo
+sudo apt update
+sduo -s
+letmein
+htop
+ps aux | grep python
+systemctl status news_feed
+journalctl -u news_feed --no-pager | tail -n 20
+systemctl stop news_feed
+systemctl start news_feed
+ss -tulnp
+netstat -tulnp
+curl http://localhost:5001
+curl -i http://localhost:5001
+wget http://example.com/sample.txt
+cat sample.txt
+rm sample.txt
+history | tail -n 50
+whoami
+id
+uptime
+df -h
+du -sh /var/www/news-feed
+top
+exit

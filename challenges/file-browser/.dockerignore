@@ -1,0 +1,6 @@
+.idea
+.venv
+.vscode
+files
+.gitignore
+file-browser.db
