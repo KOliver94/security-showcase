@@ -5,7 +5,7 @@ from playwright.sync_api import sync_playwright
 import time
 
 with sync_playwright() as p:
-    browser = p.chromium.launch(headless=True)
+    browser = p.chromium.launch(headless=True, args=["--no-sandbox"])
     page = browser.new_page()
 
     page.goto(os.environ.get('APPLICATION_URL', "http://localhost:5000"))

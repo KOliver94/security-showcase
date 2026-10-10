@@ -35,7 +35,9 @@ for APP in "news-feed" "file-browser" "news-feed/helpers"; do
     chown bob:bob news-feed.db
   elif [ "$APP" == "news-feed/helpers" ]; then
     cd $APP_DIR || exit
+    export PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
     playwright install --with-deps chromium-headless-shell
+    chmod -R a+rX /opt/ms-playwright
   fi
 done
 
