@@ -8,7 +8,7 @@ with sync_playwright() as p:
     browser = p.chromium.launch(headless=True, args=["--no-sandbox"])
     page = browser.new_page()
 
-    page.goto(os.environ.get('APPLICATION_URL', "http://localhost:5000"))
+    page.goto(os.environ.get('APPLICATION_URL', "http://localhost:5001"))
 
     print("Starting login...")
     page.fill("input[name='username']", "charlie")
