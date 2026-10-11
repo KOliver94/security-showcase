@@ -7,14 +7,15 @@ Severity is "in-context" (how much it contributes to the chain), not CVSS.
 | # | Weakness | Location | CWE | In-context severity |
 |---|----------|----------|-----|:-------------------:|
 | 1 | Stored XSS via blacklist sanitiser + `\| safe` | news-feed | [CWE-79](https://cwe.mitre.org/data/definitions/79.html) | High |
-| 2 | Session cookie not `HttpOnly` | news-feed | [CWE-1004](https://cwe.mitre.org/data/definitions/1004.html) | High |
-| 3 | SQL injection via f-string | news-feed | [CWE-89](https://cwe.mitre.org/data/definitions/89.html) | Critical |
-| 4 | Weak password hashing (unsalted MD5) | news-feed | [CWE-916](https://cwe.mitre.org/data/definitions/916.html) | High |
-| 5 | Credential reuse across apps | news-feed + file-browser | [CWE-521](https://cwe.mitre.org/data/definitions/521.html) | High |
-| 6 | Path traversal / LFI via broken check | file-browser | [CWE-22](https://cwe.mitre.org/data/definitions/22.html) | Critical |
-| 7 | Secret in shell history | setup/bash_history | [CWE-532](https://cwe.mitre.org/data/definitions/532.html) | High |
-| 8 | Unpatched kernel (CVE-2024-1086) | host | [CWE-416](https://cwe.mitre.org/data/definitions/416.html) | Critical |
-| 9 | Missing security headers / weak session config | both apps | [CWE-693](https://cwe.mitre.org/data/definitions/693.html) | Low |
+| 2 | Broken access control on post creation | news-feed | [CWE-862](https://cwe.mitre.org/data/definitions/862.html) | High |
+| 3 | Session cookie not `HttpOnly` | news-feed | [CWE-1004](https://cwe.mitre.org/data/definitions/1004.html) | High |
+| 4 | SQL injection via f-string | news-feed | [CWE-89](https://cwe.mitre.org/data/definitions/89.html) | Critical |
+| 5 | Weak password hashing (unsalted MD5) | news-feed | [CWE-916](https://cwe.mitre.org/data/definitions/916.html) | High |
+| 6 | Credential reuse across apps | news-feed + file-browser | [CWE-521](https://cwe.mitre.org/data/definitions/521.html) | High |
+| 7 | Path traversal / LFI via broken check | file-browser | [CWE-22](https://cwe.mitre.org/data/definitions/22.html) | Critical |
+| 8 | Secret in shell history | setup/bash_history | [CWE-532](https://cwe.mitre.org/data/definitions/532.html) | High |
+| 9 | Unpatched kernel (CVE-2024-1086) | host | [CWE-416](https://cwe.mitre.org/data/definitions/416.html) | Critical |
+| 10 | Missing security headers / weak session config | both apps | [CWE-693](https://cwe.mitre.org/data/definitions/693.html) | Low |
 
 ---
 
@@ -38,7 +39,23 @@ def sanitize_body(content):
 
 ---
 
-## 2 — Session cookie readable by JavaScript
+## 2 — Broken access control on post creation
+
+**Where:** [`news-feed/app.py:153`](../challenges/news-feed/app.py#L153) (`create_news`) and [`templates/index.html:29`](../challenges/news-feed/templates/index.html#L29).
+
+```python
+@app.route('/news/create', methods=['GET', 'POST'])
+@login_required                 # note: NOT @admin_required
+def create_news():
+```
+
+**Root cause:** the UI hides the "Post News" link from non-admins (`{% if not session['is_admin'] %}d-none{% endif %}`), but the route behind it only requires login. Authorization lives in the template, not the handler — security through obscurity. Any registered user can browse straight to `/news/create` and publish a post, which is exactly how a low-privilege attacker plants the stored XSS that an admin later views.
+
+**Fix:** enforce authorization in the handler, not the markup. If posting is meant to be admin-only, decorate the route with `@admin_required` (as `edit_news` / `delete_news` already are). Hiding a control in the UI is presentation, never access control — assume every route is reachable by anyone who is logged in.
+
+---
+
+## 3 — Session cookie readable by JavaScript
 
 **Where:** [`news-feed/app.py:11`](../challenges/news-feed/app.py#L11).
 
@@ -52,7 +69,7 @@ app.config['SESSION_COOKIE_HTTPONLY'] = False  # TODO: Remove this workaround
 
 ---
 
-## 3 — SQL injection via f-string
+## 4 — SQL injection via f-string
 
 **Where:** [`news-feed/app.py:189`](../challenges/news-feed/app.py#L189) (`edit_news`) and [`:232`](../challenges/news-feed/app.py#L232) (`delete_news`).
 
@@ -76,7 +93,7 @@ Also declare the route converter as `<int:news_id>` so non-numeric ids are rejec
 
 ---
 
-## 4 — Unsalted MD5 password hashing
+## 5 — Unsalted MD5 password hashing
 
 **Where:** [`news-feed/app.py:38`](../challenges/news-feed/app.py#L38) + [`news-feed/schema.sql`](../challenges/news-feed/schema.sql).
 
@@ -91,7 +108,7 @@ def md5_hash(password):
 
 ---
 
-## 5 — Credential reuse across applications
+## 6 — Credential reuse across applications
 
 **Where:** `admin` = `*M0nK3y*` in **both** [news-feed](../challenges/news-feed/schema.sql) and [file-browser](../challenges/file-browser/schema.sql).
 
@@ -101,7 +118,7 @@ def md5_hash(password):
 
 ---
 
-## 6 — Path traversal / LFI via broken `is_safe_path`
+## 7 — Path traversal / LFI via broken `is_safe_path`
 
 **Where:** [`file-browser/app.py:57`](../challenges/file-browser/app.py#L57), used by `/view` ([:141](../challenges/file-browser/app.py#L141)) and `/download` ([:168](../challenges/file-browser/app.py#L168)).
 
@@ -125,7 +142,7 @@ Better still: never accept absolute paths from the user. Take a filename relativ
 
 ---
 
-## 7 — Secret written to shell history
+## 8 — Secret written to shell history
 
 **Where:** [`setup/bash_history`](../setup/bash_history) (planted as `/home/bob/.bash_history`).
 
@@ -140,7 +157,7 @@ letmein
 
 ---
 
-## 8 — Unpatched kernel (CVE-2024-1086)
+## 9 — Unpatched kernel (CVE-2024-1086)
 
 **Where:** the Debian **12.4.0** base box ([Vagrantfile](../Vagrantfile), [provision.sh](../setup/provision.sh)).
 
@@ -150,10 +167,10 @@ letmein
 
 ---
 
-## 9 — Missing security headers / weak session hygiene
+## 10 — Missing security headers / weak session hygiene
 
 **Where:** both Flask apps.
 
 **Root cause:** no CSP, no `X-Content-Type-Options`, no `Secure`/`SameSite` cookies, `send_file` with attacker-controlled paths, GET used for a destructive delete, and no CSRF protection on state-changing forms.
 
-**Fix:** add security headers (via `flask-talisman` or an explicit `after_request`), set the cookie flags from #2, move all mutations to POST with CSRF tokens.
+**Fix:** add security headers (via `flask-talisman` or an explicit `after_request`), set the cookie flags from #3, move all mutations to POST with CSRF tokens.

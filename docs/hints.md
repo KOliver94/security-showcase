@@ -26,7 +26,7 @@ You should find SSH plus **two** web applications on non-standard ports. They lo
 
 <details><summary>Hint 1.1</summary>
 
-The news feed lets anyone register and post. Admins get Edit/Delete buttons you don't. You need an admin session — but you don't have an admin password yet. What if someone else also reads these posts?
+The news feed lets anyone register. Admins get Edit/Delete — and Post — buttons you don't. You need an admin session, but you don't have an admin password yet. What if someone else also reads these posts?
 </details>
 
 <details><summary>Hint 1.2</summary>
@@ -36,10 +36,15 @@ Suppose an admin reads the feed from time to time. If your post could run code i
 
 <details><summary>Hint 1.3</summary>
 
-There is a body "sanitizer." Read exactly what it strips — it only removes one specific tag, as a literal substring. Plenty of ways to run JavaScript don't use that tag at all. And check the session cookie's flags: is it actually protected from JavaScript?
+As a normal user there's no "Post News" button — but is the create route actually protected, or just hidden from the menu? Try requesting the posting path directly.
 </details>
 
 <details><summary>Hint 1.4</summary>
+
+There is a body "sanitizer." Read exactly what it strips — it only removes one specific tag, as a literal substring. Plenty of ways to run JavaScript don't use that tag at all. And check the session cookie's flags: is it actually protected from JavaScript?
+</details>
+
+<details><summary>Hint 1.5</summary>
 
 Stored XSS via e.g. an `onerror` handler → exfiltrate `document.cookie` to a listener you control. There is a ready-made collector in [`solution/xss-exploit/`](../solution/xss-exploit). Wait for an admin to load the page, then import the stolen `session` cookie into your own browser.
 </details>
