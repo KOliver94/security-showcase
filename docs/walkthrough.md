@@ -24,7 +24,7 @@ Each link is necessary — the lab is built so you can't skip ahead (the dead en
 The VMs share a network but get their addresses from DHCP, so the target's IP isn't fixed — finding it is part of the exercise, exactly as it would be on a real engagement where you only know a subnet. From the Kali box, learn your own subnet, then sweep it for live hosts:
 
 ```bash
-ip -4 addr                   # note kali's address and mask, e.g. 192.168.56.21/24
+ip -4 addr                   # note kali's address and mask, e.g. 192.168.56.20/24
 nmap -sn 192.168.56.0/24     # ping sweep — the target is the other host that answers
 ```
 
@@ -88,7 +88,7 @@ In a real deployment this would be a human admin who logs in and reads the news 
 
 ### 1c. Stand up the collector (on Kali)
 
-A ready-made listener is in [`solution/xss-exploit/`](../solution/xss-exploit). It accepts a POST and prints the JSON body:
+A ready-made listener is in [`solution/xss-exploit/`](../solution/xss-exploit). The lab repo isn't synced to the Kali box, so get it there first — `scp -r` the `solution/` directory from your host, `git clone` the repo on Kali, or just recreate the ~20-line collector by hand. Then run it:
 
 ```bash
 cd solution/xss-exploit

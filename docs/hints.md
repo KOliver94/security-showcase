@@ -112,7 +112,7 @@ You now have a real system password for `bob`. SSH is open.
 
 <details><summary>Hint 5.2</summary>
 
-Debian 12.4.0's kernel is vulnerable to **CVE-2024-1086** (nf_tables use-after-free, local root). A well-known public PoC exists. Build it on the box and run it as `bob`.
+The box's kernel (Debian 12) is vulnerable to **CVE-2024-1086** (nf_tables use-after-free, local root). Notselwyn publishes a prebuilt exploit binary on the project's Releases page — grab that and run it as `bob` (there's no compiler on the target).
 </details>
 
 ---
