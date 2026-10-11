@@ -33,7 +33,7 @@ New here and running the session? Hand the audience `docs/hints.md`, keep `docs/
 ## Architecture
 
 ```
-          ┌───────────────────────── debian_vm (Debian 12.4.0) ─────────────────────────┐
+          ┌───────────────────────── debian_vm (Debian 12) ─────────────────────────────┐
 attacker  │                                                                              │
 (kali_vm) │   :22  sshd                                                                  │
    │      │   :5001 news_feed      (systemd, user=bob)   Flask  — XSS + SQL injection    │

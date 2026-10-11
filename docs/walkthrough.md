@@ -249,7 +249,7 @@ You now have an interactive shell as the unprivileged service user `bob`.
 
 `bob` is **not** in the `sudo` group (only `frank` is — [provision.sh:3](../setup/provision.sh#L3)), and `frank`'s hash is in root-only `/etc/shadow`. So we need a sudo-independent local root.
 
-The target is Debian **12.4.0**, whose kernel is vulnerable to **CVE-2024-1086** — a use-after-free in netfilter `nf_tables` that yields local root. Notselwyn's public PoC:
+The target runs Debian 12 with kernel **`6.1.0-17`**, which is vulnerable to **CVE-2024-1086** — a use-after-free in netfilter `nf_tables` that yields local root (fixed in `6.1.0-18` / 6.1.76). Notselwyn's public PoC:
 
 - https://github.com/Notselwyn/CVE-2024-1086
 

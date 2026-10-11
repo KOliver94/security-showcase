@@ -159,7 +159,7 @@ letmein
 
 ## 9 — Unpatched kernel (CVE-2024-1086)
 
-**Where:** the Debian **12.4.0** base box ([Vagrantfile](../Vagrantfile), [provision.sh](../setup/provision.sh)).
+**Where:** the Debian 12 base box, kernel **`6.1.0-17`** ([Vagrantfile](../Vagrantfile), [provision.sh](../setup/provision.sh)).
 
 **Root cause:** the shipped kernel has the netfilter `nf_tables` use-after-free (local privilege escalation). Any local user → root.
 
