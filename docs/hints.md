@@ -12,7 +12,7 @@ Goal: **recover the password of the system user `frank`.**
 
 <details><summary>Hint 0.1</summary>
 
-You have a target VM and a Kali VM. What is actually listening on the target? Start with a full port + service scan.
+You have a target VM and a Kali VM on the same network, but you aren't told the target's IP (it's from DHCP). Find your own subnet first (`ip addr`), ping-sweep it to locate the target, then run a full port + service scan against it. (Shortcut: both VMs are yours — the host's `vagrant ssh debian_vm -c "hostname -I"` hands you the IP.)
 </details>
 
 <details><summary>Hint 0.2</summary>

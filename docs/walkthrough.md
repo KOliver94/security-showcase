@@ -2,9 +2,9 @@
 
 > **Full spoilers.** This is the complete intended solution. If you want to attempt it yourself, use [hints.md](hints.md) instead.
 
-Example addresses used below — substitute your own VM IPs:
+Example addresses used below — the VMs get their IPs from DHCP, so yours will differ. Discover them in [Stage 0](#stage-0--recon) and substitute throughout.
 
-| Host | IP |
+| Host | IP (example) |
 |------|----|
 | `debian_vm` (target) | `192.168.56.10` |
 | `kali_vm` (attacker) | `192.168.56.20` |
@@ -18,6 +18,23 @@ Each link is necessary — the lab is built so you can't skip ahead (the dead en
 ---
 
 ## Stage 0 — Recon
+
+### Find the target
+
+The VMs share a network but get their addresses from DHCP, so the target's IP isn't fixed — finding it is part of the exercise, exactly as it would be on a real engagement where you only know a subnet. From the Kali box, learn your own subnet, then sweep it for live hosts:
+
+```bash
+ip -4 addr                   # note kali's address and mask, e.g. 192.168.56.21/24
+nmap -sn 192.168.56.0/24     # ping sweep — the target is the other host that answers
+```
+
+> **Shortcut.** Both VMs are yours and managed by Vagrant, so you can skip the sweep and ask the host directly (run on your host, not inside Kali):
+> ```bash
+> vagrant ssh debian_vm -c "hostname -I"
+> ```
+> (`vagrant ssh-config debian_vm` also shows it). Use that address as the target below.
+
+### Scan the target
 
 ```bash
 nmap -sV -p- 192.168.56.10
