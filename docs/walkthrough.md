@@ -92,9 +92,13 @@ A ready-made listener is in [`solution/xss-exploit/`](../solution/xss-exploit). 
 
 ```bash
 cd solution/xss-exploit
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 flask --app app run --host=0.0.0.0 --port=4000
 ```
+
+(Kali/Debian mark the system Python externally-managed, so the venv avoids a `pip` refusal.)
 
 It enables CORS, so the cross-origin `fetch` from the victim's page is allowed.
 
