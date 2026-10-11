@@ -1,3 +1,5 @@
+#!/bin/bash
+
 useradd -m -s /bin/bash frank
 echo 'frank:$6$/pNKDKkSOlW2cUo2$iqXyyyL69Yc.HykOLBlEiTd16MvertveLs/LP3g943pFYMt5yf54JGcdNcxN8msmJRXxwt.ZFAhmLPIApCqkz.' | chpasswd --encrypted
 usermod -aG sudo frank
@@ -24,16 +26,16 @@ for APP in "news-feed" "file-browser" "news-feed/helpers"; do
   source $APP_DIR/.venv/bin/activate
   pip install --upgrade pip -r $APP_DIR/requirements.txt
 
-  if [ "$APP" == "file-browser" ]; then
+  if [ "$APP" = "file-browser" ]; then
     cd $APP_DIR || exit
     flask init-db
     flask generate-files
     chown bob:bob file-browser.db
-  elif [ "$APP" == "news-feed" ]; then
+  elif [ "$APP" = "news-feed" ]; then
     cd $APP_DIR || exit
     flask init-db
     chown bob:bob news-feed.db
-  elif [ "$APP" == "news-feed/helpers" ]; then
+  elif [ "$APP" = "news-feed/helpers" ]; then
     cd $APP_DIR || exit
     export PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
     playwright install --with-deps chromium-headless-shell
