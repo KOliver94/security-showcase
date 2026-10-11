@@ -66,6 +66,8 @@ vagrant up kali_vm
 
 `debian_vm` is the target; `kali_vm` is your attack box. The target is provisioned by [setup/provision.sh](setup/provision.sh): it creates the system users, drops the two web apps under `/var/www`, installs the three systemd services, and plants `bob`'s `.bash_history`.
 
+Log in to the Kali box (GUI or SSH) with the Vagrant box default: **`vagrant` / `vagrant`** (same for `sudo`; root via `sudo su`).
+
 ### 2. (Re)initialising an app by hand
 
 Each Flask app ships a `schema.sql` and an `init-db` command. The provision script runs these for you; to reset manually on the target:
@@ -73,6 +75,23 @@ Each Flask app ships a `schema.sql` and an `init-db` command. The provision scri
 ```bash
 cd /var/www/news-feed     && flask --app app init-db
 cd /var/www/file-browser  && flask --app app init-db && flask --app app generate-files
+```
+
+---
+
+## Teardown
+
+When you're done, destroy both VMs to reclaim the disk and remove the deliberately vulnerable services:
+
+```bash
+vagrant destroy -f
+```
+
+That removes every machine defined here (`debian_vm` and `kali_vm`); add a name to target one (e.g. `vagrant destroy -f debian_vm`). To re-run the exercise clean later, `vagrant up` rebuilds from scratch. To also drop the downloaded base boxes:
+
+```bash
+vagrant box remove generic/debian12
+vagrant box remove kalilinux/rolling
 ```
 
 ---

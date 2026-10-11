@@ -18,6 +18,11 @@ Vagrant.configure("2") do |config|
   config.vm.define "kali_vm" do |kali|
     kali.vm.box = "kalilinux/rolling"
     kali.vm.box_version  = "2024.4"
+
+    # The attack box needs no host files. Disable the default /vagrant share so
+    # Vagrant doesn't fall back to SMB (which prompts for host credentials and
+    # blocks provisioning on Windows hosts).
+    kali.vm.synced_folder ".", "/vagrant", disabled: true
   end
 
 end
