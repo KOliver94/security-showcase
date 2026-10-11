@@ -49,9 +49,9 @@ attacker  │                                                                   
 | `sshd` | 22 | — | — | Foothold once `bob`'s password leaks |
 | `news_feed` | 5001 | `bob` | `/var/www/news-feed` | Stored XSS → steal admin cookie → SQLi → dump/crack creds |
 | `file_browser` | 7002 | `bob` | `/var/www/file-browser` | Reused admin password → path traversal → read `bob`'s history |
-| `admin_simulator` | — | `bob` | `/var/www/news-feed/helpers` | Headless Chromium that "visits" as admin so stored XSS fires |
+| `admin_simulator` | — | `bob` | `/var/www/news-feed/helpers` | Stands in for a human admin — drives a real browser that signs in and views the feed, so stored XSS fires |
 
-The `admin_simulator` is what turns a *stored* XSS into a practical cookie theft: it signs in as `charlie` (an admin) and reloads the feed once a minute, executing whatever payload the latest post contains.
+The `admin_simulator` exists only because the lab has no live human: it simulates a real admin's normal behaviour — signing in as `charlie` in a real browser and revisiting the feed — which is what turns a *stored* XSS into practical cookie theft. It is not a service account or automation endpoint to attack; it is the victim you phish into running your payload.
 
 ---
 

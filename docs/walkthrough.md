@@ -84,7 +84,7 @@ So `document.cookie` includes the Flask `session` cookie, and our injected JS ca
 
 ### 1b. Who executes our payload
 
-The `admin_simulator` service (a headless Chromium bot) logs in as **`charlie`** — an admin — and reloads the feed every 60 seconds: [`helpers/admin_simulator.py`](../challenges/news-feed/helpers/admin_simulator.py). Our stored post runs in charlie's authenticated browser, so we capture charlie's admin cookie.
+In a real deployment this would be a human admin who logs in and reads the news feed during their day. The lab has no live person, so the `admin_simulator` service stands in for one: it drives a real browser (headless Chromium) that signs in as the admin **`charlie`** and revisits the feed periodically, exactly as a real admin would — see [`helpers/admin_simulator.py`](../challenges/news-feed/helpers/admin_simulator.py). It is not a service account or an automation hook you could attack directly; it is just a way to simulate the victim's normal behaviour. When charlie views the feed, our stored post runs in their authenticated browser, so we capture charlie's admin cookie.
 
 ### 1c. Stand up the collector (on Kali)
 
